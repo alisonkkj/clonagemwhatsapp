@@ -17,140 +17,70 @@ echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
 
-# Formatar número para exibir (DDD + 9 dígitos)
 ddd="${numero:0:2}"
 parte1="${numero:2:5}"
 parte2="${numero:7:4}"
 numero_formatado="(+55) (${ddd}) ${parte1}-${parte2}"
 
-# Lista dos DDDs da região para sortear (exemplo Sul do Brasil)
+gera_seed() {
+    local str="$1"
+    local sum=0
+    for (( i=0; i<${#str}; i++ )); do
+        sum=$(( sum + $(printf "%d" "'${str:i:1}") ))
+    done
+    echo $sum
+}
+
+seed=$(gera_seed "$numero")
+RANDOM=$seed
+
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
-# Mensagens neutras, variadas, com gírias e erros, muitas linhas pra não repetir fácil
 mensagens_texto=(
-"vamo q vamo"
-"tô na correria"
-"cê viu aquilo?"
-"blz já tô indo"
-"fala aí demorô"
-"sussa tô de boa"
-"tá ligado"
-"pega leve"
-"de boa só na paz"
-"faz um pix aí"
-"tô sem grana"
-"já já to lá"
-"manda aquela foto"
-"bora marcar"
-"tá osso hoje"
-"tô na rua"
-"só espera aí"
-"vlw, tamo junto"
-"num to podendo agora"
-"tipo assim"
-"se pá eu passo aí"
-"deu ruim aqui"
-"nem me fala"
-"qual é a boa?"
-"que horas chega?"
-"já jantei"
-"to bolado"
-"parou no farol"
-"vamo na fé"
-"tá tranquilo"
-"tô na atividade"
-"é nois"
-"partiu"
-"não deu não"
-"qual é a fita?"
-"me chama lá"
-"responde aí"
-"tô de boa na lagoa"
-"chega junto"
-"firmeza"
-"que isso"
-"não curti"
-"tá suave"
-"segura a onda"
-"vamo que vamo"
-"se liga"
-"é nóis na fita"
-"passa a visão"
-"qual o papo?"
-"tá osso aqui"
-"tá na hora"
-"não vacila"
-"já era"
-"tá ligado aí?"
-"sabe de nada"
-"isso aí"
-"é isso"
-"demorô"
-"tá de brincadeira"
-"vem tranquilo"
-"deixa quieto"
-"tô morto de cansaço"
-"manda áudio"
-"chegou aí?"
-"tá longe"
-"quero ver"
-"na moral"
-"se cuida"
-"foi mal"
-"me esqueci"
-"tá meio ruim"
-"quero almoço"
-"to indo já"
-"vamo resolver"
-"dá um toque"
-"já te aviso"
-"tá no esquema"
-"fica frio"
-"to na luta"
-"me dá um help"
-"que bagulho doido"
-"tô pistola"
-"tô na pegada"
-"to sem tempo"
-"pode crer"
-"tá ligado no esquema"
-"vish, que que rolou?"
-"foi mal a demora"
-"cadê vc?"
-"não tô sabendo"
-"manda o endereço"
-"tô chegando"
-"chama no zap"
-"tô de boa aqui"
-"vai dar certo"
-"tá na hora de sair"
-"já tô a caminho"
-"vem tranquilo que tá suave"
-"só um minutinho"
-"tô sem sinal"
-"já resolve isso aí"
-"tô com fome"
-"preciso de um favor"
-"manda aí"
-"de boa na lagoa"
-"tá na paz"
-"tá na moral"
-"quero sair logo"
-"vamo marcar logo"
-"tá complicado aqui"
-"já volto"
-"me espera aí"
-"chega junto que é sucesso"
+"vamo q vamo" "vamo que vamo" "tô na correria" "cê viu aquilo?" "blz já tô indo" "fala aí demorô"
+"sussa tô de boa" "tá ligado" "pega leve" "de boa só na paz" "faz um pix aí" "tô sem grana"
+"já já to lá" "manda aquela foto" "bora marcar" "tá osso hoje" "tô na rua" "só espera aí"
+"vlw, tamo junto" "num to podendo agora" "tipo assim" "se pá eu passo aí" "deu ruim aqui"
+"nem me fala" "qual é a boa?" "que horas chega?" "já jantei" "to bolado" "parou no farol"
+"vamo na fé" "tá tranquilo" "tô na atividade" "é nois" "partiu" "não deu não" "qual é a fita?"
+"me chama lá" "responde aí" "tô de boa na lagoa" "chega junto" "firmeza" "que isso"
+"não curti" "tá suave" "segura a onda" "vamo que vamo" "se liga" "é nóis na fita"
+"passa a visão" "qual o papo?" "tá osso aqui" "tá na hora" "não vacila" "já era" "tá ligado aí?"
+"sabe de nada" "isso aí" "é isso" "demorô" "tá de brincadeira" "vem tranquilo" "deixa quieto"
+"tô morto de cansaço" "manda áudio" "chegou aí?" "tá longe" "quero ver" "na moral" "se cuida"
+"foi mal" "me esqueci" "tá meio ruim" "quero almoço" "to indo já" "vamo resolver" "dá um toque"
+"já te aviso" "tá no esquema" "fica frio" "to na luta" "me dá um help" "que bagulho doido"
+"tô pistola" "tô na pegada" "to sem tempo" "pode crer" "tá ligado no esquema" "vish, que que rolou?"
+"foi mal a demora" "cadê vc?" "não tô sabendo" "manda o endereço" "tô chegando" "chama no zap"
+"tô de boa aqui" "vai dar certo" "tá na hora de sair" "já tô a caminho" "vem tranquilo que tá suave"
+"só um minutinho" "tô sem sinal" "já resolve isso aí" "tô com fome" "preciso de um favor"
+"manda aí" "de boa na lagoa" "tá na paz" "tá na moral" "quero sair logo" "vamo marcar logo"
+"tá complicado aqui" "já volto" "me espera aí" "chega junto que é sucesso" "me chama no direct"
+"tá difícil de acreditar" "sem estresse" "não esquenta" "tá tudo certo" "tô de boa na paz"
+"vamos agilizar isso aí" "manda o link" "vou passar aí" "fala com ele" "fica tranquilo" "tô na moral"
+"me liga depois" "tô tentando resolver" "já tá no corre" "não deu nada" "to quase chegando"
+"qualquer coisa avisa" "tô no ponto" "já sei" "na boa" "tá bom pra você?" "manda aquele áudio"
+"tá ficando tarde" "já tô cansado" "deixa eu ver" "tá no esquema" "não vai dar não" "tô de olho"
+"segura essa" "deixa pra lá" "não tô afim" "tá osso demais" "vamo ver no que dá" "chega mais"
 )
 
-tipos_mensagem=("Texto" "Áudio" "Imagem" "Vídeo")
+audios=(
+"Mensagem de voz - 0:12" "Gravação - 0:05" "Nota de áudio - 0:09" "Áudio rápido - 0:15" "Áudio longo - 0:23"
+)
+
+imagens=(
+"Foto de praia.jpg" "Selfie engraçada.png" "Print do jogo.jpeg" "Foto do grupo.png" "Imagem engraçada.jpg"
+)
+
+videos=(
+"Vídeo - Aniversário 2023.mp4" "Clipes engraçados.mp4" "Vídeo do rolê.mp4" "Filmagem do jogo.mp4" "Vídeo curto.mp4"
+)
 
 status_msg=("enviado" "entregue" "lido")
 
 prefixos_fixo=(3 4 7)
 
-# Nomes com mais opções comuns e neutros
-nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia" "Mãe" "Pai" "Paulo" "Pedro" "Laura" "Gabriel" "Julia" "Carla" "Rosa" "Joana" "José" "Antônio")
+nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia" "Mãe" "Pai" "Paulo" "Pedro" "Laura" "Gabriel" "Julia" "Carla" "Rosa" "Joana" "José" "Antônio" "Nina" "Léo" "Gui" "Tati" "Bia" "Duda")
 
 declare -A contatos
 declare -A combos
@@ -179,32 +109,46 @@ gerar_numero() {
     fi
 }
 
+barra_progresso() {
+    local tempo=$1
+    local i=0
+    local barra=""
+    echo -ne "${amarelo}Processando, aguarde ${tempo}s... ${reset}\n"
+    while [ $i -lt $tempo ]; do
+        sleep 1
+        ((i++))
+        barra="${barra}#"
+        echo -ne "\r${amarelo}[${barra}] ${i}s/${tempo}s${reset} "
+    done
+    echo -e "\n"
+}
+
 echo
 echo -e "${verde}[+] Conectando ao número ${branco}${numero_formatado}${reset}"
-echo -e "${amarelo}[i] Processando, aguarde 150 segundos...${reset}"
-sleep 150
+barra_progresso 10 # pra teste, no uso real troca pra 150
 
 criar_contatos
 
 gerar_horario() {
-    h=$((8 + RANDOM % 15))
-    m=$((RANDOM % 60))
-    printf "%02d:%02d" $h $m
+    # Hora atual +- até 3 horas atrás (mas dentro do dia, 8-22h)
+    local hora_atual=$(date +%H)
+    local min_atual=$(date +%M)
+    local base=$((hora_atual - 3))
+    (( base < 8 )) && base=8
+    (( hora_atual > 22 )) && hora_atual=22
+    local hora=$(( base + RANDOM % (hora_atual - base + 1) ))
+    local minuto=$(( RANDOM % 60 ))
+    printf "%02d:%02d" $hora $minuto
 }
 
+declare -i indice_msg=0
 pegar_msg_unica() {
     local total=${#mensagens_texto[@]}
-    if [[ ${#usadas_msg[@]} -eq $total ]]; then
-        usadas_msg=()
+    if (( indice_msg >= total )); then
+        indice_msg=0
     fi
-    while :; do
-        local idx=$(( RANDOM % total ))
-        if [[ ! " ${usadas_msg[*]} " =~ " $idx " ]]; then
-            usadas_msg+=($idx)
-            echo "${mensagens_texto[$idx]}"
-            break
-        fi
-    done
+    echo "${mensagens_texto[indice_msg]}"
+    ((indice_msg++))
 }
 
 get_mensagem_combo() {
@@ -244,13 +188,39 @@ get_mensagem_combo() {
     echo "$proxima_msg"
 }
 
+imprimir_maquina_escrever() {
+    local texto="$1"
+    local delay=0.04
+    for (( i=0; i<${#texto}; i++ )); do
+        echo -n "${texto:$i:1}"
+        sleep $delay
+    done
+}
+
 mostrar_mensagem() {
     local num="$1"
     local nome="${contatos[$num]}"
     local hora=$(gerar_horario)
-    local tipo_msg=${tipos_mensagem[$RANDOM % ${#tipos_mensagem[@]}]}
+
+    # Probabilidades: texto 70%, áudio/imagem 25%, vídeo 5%
+    local rand_tipo=$(( RANDOM % 100 ))
+    local tipo_msg=""
+    if (( rand_tipo < 70 )); then
+        tipo_msg="Texto"
+    elif (( rand_tipo < 95 )); then
+        # Áudio ou imagem (50% cada)
+        if (( RANDOM % 2 == 0 )); then
+            tipo_msg="Áudio"
+        else
+            tipo_msg="Imagem"
+        fi
+    else
+        tipo_msg="Vídeo"
+    fi
+
     local status=${status_msg[$RANDOM % ${#status_msg[@]}]}
     local texto=""
+    local reacao=""
 
     if [[ -n "${combos[$num]}" ]]; then
         texto="${combos[$num]}"
@@ -265,9 +235,9 @@ mostrar_mensagem() {
 
     case "$tipo_msg" in
         "Texto") ;;
-        "Áudio") texto="[Mensagem de voz]" ;;
-        "Imagem") texto="[Imagem]" ;;
-        "Vídeo") texto="[Vídeo]" ;;
+        "Áudio") texto="${audios[$RANDOM % ${#audios[@]}]}" ;;
+        "Imagem") texto="${imagens[$RANDOM % ${#imagens[@]}]}" ;;
+        "Vídeo") texto="${videos[$RANDOM % ${#videos[@]}]}" ;;
     esac
 
     if [[ "$status" == "lido" ]]; then
@@ -276,14 +246,37 @@ mostrar_mensagem() {
         msg_cor="${branco}"
     fi
 
-    echo -ne "${amarelo}${nome} está digitando...${reset}\r"
-    sleep 1
+    # Reações simples aleatórias
+    reacoes=("👍" "😂" "😮" "👏" "🔥" "👌" "")
+    reacao=${reacoes[$RANDOM % ${#reacoes[@]}]}
+
+    # Digitando animado
+    for ret in "" "." ".." "..."; do
+        echo -ne "${amarelo}${nome} está digitando${ret}...${reset}\r"
+        sleep 0.5
+    done
     echo -ne "\r                          \r"
 
-    echo -e "${cinza}[$hora]${reset} ${verde}$nome ${msg_cor}$num${reset}: ${msg_cor}$texto ${amarelo}(${tipo_msg}, ${status})${reset}"
+    # Mostrar mensagem com efeito máquina de escrever
+    echo -ne "${cinza}[$hora]${reset} ${verde}$nome ${msg_cor}$num${reset}: "
+    imprimir_maquina_escrever "$texto"
+    echo -ne " ${amarelo}(${tipo_msg}, ${status})${reset}"
+
+    # Mostrar reação (quando existir)
+    if [[ -n "$reacao" ]]; then
+        echo -e " $reacao"
+    else
+        echo ""
+    fi
+
+    # Intervalo entre mensagens mais natural: 1 a 3 segundos
+    sleep_time=$(awk -v min=1 -v max=3 'BEGIN{srand(); print min+rand()*(max-min)}')
+    sleep $sleep_time
 }
 
 contador=0
+
+echo -e "\n${verde}Iniciando simulação de conversa...${reset}\n"
 
 while true; do
     keys=("${!contatos[@]}")
@@ -291,8 +284,8 @@ while true; do
     mostrar_mensagem "$selecionado"
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
-    sleep_time=$(awk -v min=0.2 -v max=0.6 'BEGIN{srand(); print min+rand()*(max-min)}')
-    sleep $sleep_time
 done
+
+
 
 
