@@ -129,17 +129,35 @@ gerar_numero() {
     fi
 }
 
-# Barra de progresso discreta (cinza claro, caracteres suaves)
+# Barra de progresso substituída por frases em loop
 barra_progresso() {
     local tempo=$1
     local i=0
-    local barra=""
-    echo -ne "${cinza}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
+    local mensagens=(
+        "Conectando à internet..."
+        "Hackeando telefone..."
+        "Estabelecendo conexão..."
+        "Acesso autorizado..."
+        "Verificando protocolos..."
+        "Carregando dados..."
+        "Erro encontrado: tentando reestabelecer conexão..."
+        "Erro corrigido: conexão segura."
+        "Sincronizando pacotes de dados..."
+        "Bypassing firewall..."
+        "Executando script de invasão..."
+        "Coletando informações do alvo..."
+        "Analisando vulnerabilidades..."
+        "Injetando payload..."
+        "Aguardando resposta do servidor..."
+        "Finalizando processo..."
+    )
+    local n=${#mensagens[@]}
+    echo
     while [ $i -lt $tempo ]; do
+        local idx=$(( i % n ))
+        echo -ne "\r${cinza}${mensagens[$idx]}${reset} "
         sleep 1
         ((i++))
-        barra="${barra}▒"
-        echo -ne "\r${cinza}[${barra}] ${i}s/${tempo}s${reset} "
     done
     echo -e "\n"
 }
@@ -288,9 +306,6 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
-
-
-
 
 
 
