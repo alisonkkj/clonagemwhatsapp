@@ -18,7 +18,7 @@ echo -e "${amarelo}  ___) | |___ | | |___ | | |_| | |\\  |${reset}"
 echo -e "${azul} |____/|_____|___\\____|___\\___/|_| \\_|${reset}"
 echo
 echo -e "${amarelo}SISTEMA DE CLONAGEM DE WHATSAPP${reset}"
-echo -e "${amarelo}              by alisonkkjj yt${reset}"
+echo -e "${vermelho}              by alisonkkjj yt${reset}"
 echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
@@ -287,6 +287,7 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
 
 
 
