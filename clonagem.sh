@@ -11,7 +11,7 @@ reset="\e[0m"
 
 clear
 echo -e "${azul}======================================================="
-echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${amarelo}by alisonkkjj yt${reset}"
+echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${vermelho}by alisonkkjj yt${reset}"
 echo -e "=======================================================${reset}"
 echo
 
@@ -124,16 +124,20 @@ gerar_numero() {
     fi
 }
 
+# Função barra de progresso SUAVE, verde, sem números piscando
 barra_progresso() {
     local tempo=$1
     local i=0
-    local barra=""
-    echo -ne "${amarelo}Iniciando clonagem... Aguarde ${tempo}s... ${reset}\n"
+    local total=50
+    echo -ne "${verde}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
     while [ $i -lt $tempo ]; do
         sleep 1
         ((i++))
-        barra="${barra}#"
-        echo -ne "\r${amarelo}[${barra}] ${i}s/${tempo}s${reset} "
+        filled=$(( i * total / tempo ))
+        empty=$(( total - filled ))
+        bar_filled=$(printf '▒%.0s' $(seq 1 $filled))
+        bar_empty=$(printf ' %.0s' $(seq 1 $empty))
+        echo -ne "\r${verde}[${bar_filled}${bar_empty}] ${i}s/${tempo}s${reset} "
     done
     echo -e "\n"
 }
@@ -282,8 +286,6 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
-
-
 
 
 
