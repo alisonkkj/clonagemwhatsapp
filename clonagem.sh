@@ -17,23 +17,43 @@ echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
 
-# DDD digitado
-ddd_input=${numero:0:2}
+# Formatar número para exibir (DDD + 9 dígitos)
+ddd="${numero:0:2}"
+parte1="${numero:2:5}"
+parte2="${numero:7:4}"
+numero_formatado="(+55) (${ddd}) ${parte1}-${parte2}"
 
 # Lista dos DDDs da região para sortear (exemplo Sul do Brasil)
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
-# Mensagens
+# Mensagens sem emojis e combos contextuais
 mensagens_texto=(
-"Oi, tudo bem?" "Chego em 10 minutos" "Não esquece de trazer o documento"
-"Pode me ligar?" "Manda a foto agora" "Transferência feita"
-"Já saiu do trabalho?" "Compra pão no caminho" "Tá no grupo novo?"
-"Preciso falar urgente" "Já chegou em casa?" "Confirma o horário"
-"Passa no mercado" "Traz o carregador" "Já tá a caminho?"
-"Reunião adiada" "Código de verificação: 493821"
-"Me manda o Pix" "Entra no link que te mandei" "Tô esperando"
-"Precisa de ajuda?" "Não conta pra ninguém" "Saiu a atualização"
-"Pagamento aprovado" "Pedido enviado" "Seu pacote foi entregue"
+"Oi, tudo bem?"
+"Chego em 10 minutos"
+"Não esquece de trazer o documento"
+"Pode me ligar?"
+"Manda a foto agora"
+"Transferência feita"
+"Já saiu do trabalho?"
+"Compra pão no caminho"
+"Tá no grupo novo?"
+"Preciso falar urgente"
+"Já chegou em casa?"
+"Confirma o horário"
+"Passa no mercado"
+"Traz o carregador"
+"Já tá a caminho?"
+"Reunião adiada"
+"Código de verificação: 493821"
+"Me manda o Pix"
+"Entra no link que te mandei"
+"Tô esperando"
+"Precisa de ajuda?"
+"Não conta pra ninguém"
+"Saiu a atualização"
+"Pagamento aprovado"
+"Pedido enviado"
+"Seu pacote foi entregue"
 )
 
 tipos_mensagem=("Texto" "Áudio" "Imagem" "Vídeo")
@@ -43,6 +63,17 @@ status_msg=("enviado" "entregue" "lido")
 prefixos_fixo=(3 4 7)
 
 nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia")
+
+declare -A contatos
+declare -A combos # Para controlar combos de mensagens
+
+criar_contatos() {
+    for i in $(seq 1 20); do
+        num=$(gerar_numero)
+        nome=${nomes[$RANDOM % ${#nomes[@]}]}
+        contatos["$num"]="$nome"
+    done
+}
 
 # Função para gerar número formatado com DDD regional
 gerar_numero() {
@@ -62,18 +93,8 @@ gerar_numero() {
     fi
 }
 
-declare -A contatos
-
-criar_contatos() {
-    for i in $(seq 1 20); do
-        num=$(gerar_numero)
-        nome=${nomes[$RANDOM % ${#nomes[@]}]}
-        contatos["$num"]="$nome"
-    done
-}
-
 echo
-echo -e "${verde}[+] Conectando ao número ${branco}+55 $ddd_input ${numero:2:4}-${numero:6:4}${reset}"
+echo -e "${verde}[+] Conectando ao número ${branco}${numero_formatado}${reset}"
 echo -e "${amarelo}[i] Processando, aguarde 150 segundos...${reset}"
 sleep 150
 
@@ -86,6 +107,29 @@ gerar_horario() {
     printf "%02d:%02d" $h $m
 }
 
+# Função para pegar mensagem e aplicar combos contextuais
+get_mensagem_combo() {
+    local ultima_msg="$1"
+    local proxima_msg=""
+
+    case "$ultima_msg" in
+        *"Me manda o Pix"*)
+            proxima_msg="Transferência feita"
+            ;;
+        *"Entra no link que te mandei"*)
+            proxima_msg="Tô esperando"
+            ;;
+        *"Já saiu do trabalho?"*)
+            proxima_msg="Já chegou em casa?"
+            ;;
+        *)
+            proxima_msg=""
+            ;;
+    esac
+
+    echo "$proxima_msg"
+}
+
 mostrar_mensagem() {
     local num="$1"
     local nome="${contatos[$num]}"
@@ -94,20 +138,51 @@ mostrar_mensagem() {
     local status=${status_msg[$RANDOM % ${#status_msg[@]}]}
     local texto=""
 
+    # Se tem combo, usa a mensagem combo e limpa o combo
+    if [[ -n "${combos[$num]}" ]]; then
+        texto="${combos[$num]}"
+        unset combos["$num"]
+    else
+        texto=${mensagens_texto[$RANDOM % ${#mensagens_texto[@]}]}
+        # Checar se a mensagem tem combo e salvar
+        combo_msg=$(get_mensagem_combo "$texto")
+        if [[ -n "$combo_msg" ]]; then
+            combos["$num"]="$combo_msg"
+        fi
+    fi
+
     case "$tipo_msg" in
-        "Texto") texto=${mensagens_texto[$RANDOM % ${#mensagens_texto[@]}]} ;;
+        "Texto") ;;
         "Áudio") texto="[Mensagem de voz]" ;;
         "Imagem") texto="[Imagem]" ;;
         "Vídeo") texto="[Vídeo]" ;;
     esac
 
-    echo -e "${cinza}[$hora]${reset} ${verde}$nome ${branco}$num${reset}: ${azul}$texto ${amarelo}(${tipo_msg}, ${status})${reset}"
+    # Cor especial pra mensagem "lido"
+    if [[ "$status" == "lido" ]]; then
+        msg_cor="${azul}"
+    else
+        msg_cor="${branco}"
+    fi
+
+    # Mostrar digitando antes da mensagem
+    echo -ne "${amarelo}${nome} está digitando...${reset}\r"
+    sleep 1
+    echo -ne "\r                          \r"  # Limpa a linha
+
+    echo -e "${cinza}[$hora]${reset} ${verde}$nome ${msg_cor}$num${reset}: ${msg_cor}$texto ${amarelo}(${tipo_msg}, ${status})${reset}"
 }
+
+contador=0
 
 # Loop principal
 while true; do
     keys=("${!contatos[@]}")
     selecionado=${keys[$RANDOM % ${#keys[@]}]}
     mostrar_mensagem "$selecionado"
-    sleep 0.3
+    ((contador++))
+    echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
+    sleep_time=$(awk -v min=0.2 -v max=0.6 'BEGIN{srand(); print min+rand()*(max-min)}')
+    sleep $sleep_time
 done
+
