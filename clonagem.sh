@@ -18,7 +18,7 @@ echo -e "${amarelo}  ___) | |___ | | |___ | | |_| | |\\  |${reset}"
 echo -e "${azul} |____/|_____|___\\____|___\\___/|_| \\_|${reset}"
 echo
 echo -e "${amarelo}SISTEMA DE CLONAGEM DE WHATSAPP${reset}"
-echo -e "${vermelho}              by alisonkkjj yt${reset}"
+echo -e "${amarelo}              by alisonkkjj yt${reset}"
 echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
@@ -133,12 +133,12 @@ barra_progresso() {
     local tempo=$1
     local i=0
     local barra=""
-    echo -ne "${amarelo}Iniciando clonagem... Aguarde ${tempo}s... ${reset}\n"
+    echo -ne "${verde}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
     while [ $i -lt $tempo ]; do
         sleep 1
         ((i++))
-        barra="${barra}#"
-        echo -ne "\r${amarelo}[${barra}] ${i}s/${tempo}s${reset} "
+        barra="${barra}▒"
+        echo -ne "\r${verde}[${barra}] ${i}s/${tempo}s${reset} "
     done
     echo -e "\n"
 }
@@ -287,6 +287,8 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
+
 
 
 
