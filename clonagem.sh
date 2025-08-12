@@ -11,7 +11,7 @@ reset="\e[0m"
 
 clear
 echo -e "${azul}======================================================="
-echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP" by alisonkkjj yt
+echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${amarelo}by alisonkkjj yt${reset}"
 echo -e "=======================================================${reset}"
 echo
 
@@ -26,11 +26,11 @@ numero_formatado="(+55) (${ddd}) ${parte1}-${parte2}"
 # Lista dos DDDs da região para sortear (exemplo Sul do Brasil)
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
-# Muitas mensagens com gírias, erros, e linguagem bem brasileira
+# Mensagens neutras, variadas, com gírias e erros, muitas linhas pra não repetir fácil
 mensagens_texto=(
 "vamo q vamo"
 "tô na correria"
-"mano cê viu aquilo?"
+"cê viu aquilo?"
 "blz já tô indo"
 "fala aí demorô"
 "sussa tô de boa"
@@ -38,7 +38,7 @@ mensagens_texto=(
 "pega leve"
 "de boa só na paz"
 "faz um pix aí"
-"tô sem grana véi"
+"tô sem grana"
 "já já to lá"
 "manda aquela foto"
 "bora marcar"
@@ -68,7 +68,7 @@ mensagens_texto=(
 "tô de boa na lagoa"
 "chega junto"
 "firmeza"
-"que isso mermão"
+"que isso"
 "não curti"
 "tá suave"
 "segura a onda"
@@ -82,8 +82,7 @@ mensagens_texto=(
 "não vacila"
 "já era"
 "tá ligado aí?"
-"cê sabe de nada"
-"meu chapa"
+"sabe de nada"
 "isso aí"
 "é isso"
 "demorô"
@@ -115,6 +114,33 @@ mensagens_texto=(
 "to sem tempo"
 "pode crer"
 "tá ligado no esquema"
+"vish, que que rolou?"
+"foi mal a demora"
+"cadê vc?"
+"não tô sabendo"
+"manda o endereço"
+"tô chegando"
+"chama no zap"
+"tô de boa aqui"
+"vai dar certo"
+"tá na hora de sair"
+"já tô a caminho"
+"vem tranquilo que tá suave"
+"só um minutinho"
+"tô sem sinal"
+"já resolve isso aí"
+"tô com fome"
+"preciso de um favor"
+"manda aí"
+"de boa na lagoa"
+"tá na paz"
+"tá na moral"
+"quero sair logo"
+"vamo marcar logo"
+"tá complicado aqui"
+"já volto"
+"me espera aí"
+"chega junto que é sucesso"
 )
 
 tipos_mensagem=("Texto" "Áudio" "Imagem" "Vídeo")
@@ -123,7 +149,8 @@ status_msg=("enviado" "entregue" "lido")
 
 prefixos_fixo=(3 4 7)
 
-nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia")
+# Nomes com mais opções comuns e neutros
+nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia" "Mãe" "Pai" "Paulo" "Pedro" "Laura" "Gabriel" "Julia" "Carla" "Rosa" "Joana" "José" "Antônio")
 
 declare -A contatos
 declare -A combos
@@ -165,11 +192,10 @@ gerar_horario() {
     printf "%02d:%02d" $h $m
 }
 
-# Escolher mensagem aleatória sem repetir até acabar todas
 pegar_msg_unica() {
     local total=${#mensagens_texto[@]}
     if [[ ${#usadas_msg[@]} -eq $total ]]; then
-        usadas_msg=()  # resetar quando acabar
+        usadas_msg=()
     fi
     while :; do
         local idx=$(( RANDOM % total ))
@@ -181,7 +207,6 @@ pegar_msg_unica() {
     done
 }
 
-# Combos simples de conversa contextual
 get_mensagem_combo() {
     local ultima_msg="$1"
     local proxima_msg=""
