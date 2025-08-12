@@ -129,33 +129,97 @@ gerar_numero() {
     fi
 }
 
-# Barra de progresso substituída por frases em loop
 barra_progresso() {
     local tempo=$1
     local i=0
-    local mensagens=(
-        "Conectando à internet..."
+    local frases=(
         "Hackeando telefone..."
-        "Estabelecendo conexão..."
-        "Acesso autorizado..."
-        "Verificando protocolos..."
-        "Carregando dados..."
-        "Erro encontrado: tentando reestabelecer conexão..."
-        "Erro corrigido: conexão segura."
-        "Sincronizando pacotes de dados..."
-        "Bypassing firewall..."
-        "Executando script de invasão..."
-        "Coletando informações do alvo..."
-        "Analisando vulnerabilidades..."
+        "Conectando à internet..."
+        "Buscando informações..."
+        "Explorando vulnerabilidades..."
+        "Interceptando dados..."
+        "Acesso garantido!"
+        "Senha descoberta!"
+        "Dados criptografados..."
+        "Analisando pacotes..."
+        "Iniciando bypass..."
+        "Erro encontrado! Corrigindo..."
+        "Falha no firewall..."
+        "Contornando segurança..."
+        "Escaneando rede..."
+        "Rastreamento ativo..."
+        "Conexão estável!"
+        "Backdoor ativado!"
+        "Chave de acesso liberada!"
+        "Monitorando atividades..."
+        "Túnel VPN estabelecido..."
+        "Scan completo!"
+        "Roteador comprometido!"
         "Injetando payload..."
-        "Aguardando resposta do servidor..."
-        "Finalizando processo..."
+        "Firewall desativado!"
+        "Conexão criptografada..."
+        "Atualizando sistema..."
+        "Monitoramento em tempo real..."
+        "Análise de logs..."
+        "Acesso remoto estabelecido..."
+        "Cifrando dados..."
+        "Extraindo informações..."
+        "Detectando brechas..."
+        "Resetando senhas..."
+        "Roteando tráfego..."
+        "Explorando backdoor..."
+        "Sessão iniciada..."
+        "Enviando pacotes..."
+        "Vulnerabilidade explorada..."
+        "Rastreamento finalizado..."
+        "Firewall reforçado..."
+        "Testando conexão..."
+        "Bypass confirmado..."
+        "Acesso root garantido..."
+        "Segurança comprometida..."
+        "Rede isolada..."
+        "Verificando sistema..."
+        "Preparando script..."
+        "Scan iniciado..."
+        "Ativando rootkit..."
+        "Extração de dados em andamento..."
+        "Reiniciando dispositivo..."
+        "Conexão estabilizada..."
+        "Processos monitorados..."
+        "Encriptando transmissão..."
+        "Sistema vulnerável..."
+        "Cache limpo..."
+        "Rede monitorada..."
+        "Captura de pacotes ativa..."
+        "Troca de chaves segura..."
+        "Senha redefinida..."
+        "Exploração concluída..."
+        "Rootkit instalado..."
+        "Bypass em execução..."
+        "Falha corrigida..."
+        "Configuração otimizada..."
+        "Rede segura..."
+        "Permissões concedidas..."
+        "Dispositivo desbloqueado..."
+        "Ativando proxy..."
+        "Acesso a dados sensíveis..."
+        "Comunicação interceptada..."
+        "Variáveis configuradas..."
+        "Análise comportamental..."
+        "Controle remoto ativado..."
+        "Senhas sincronizadas..."
+        "Pacotes inspecionados..."
+        "Rastreamento inicializado..."
+        "Filtro de pacotes ativo..."
+        "Monitoramento finalizado..."
+        "Autenticação verificada..."
+        "Atualização concluída..."
+        "Bypass finalizado..."
+        "Processo concluído..."
+        "Análise final em andamento..."
     )
-    local n=${#mensagens[@]}
-    echo
     while [ $i -lt $tempo ]; do
-        local idx=$(( i % n ))
-        echo -ne "\r${cinza}${mensagens[$idx]}${reset} "
+        echo -ne "\r${verde}${frases[$((i % ${#frases[@]}))]}${reset} "
         sleep 1
         ((i++))
     done
@@ -306,6 +370,8 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
+
 
 
 
