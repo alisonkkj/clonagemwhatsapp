@@ -36,6 +36,7 @@ RANDOM=$seed
 
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
+# Lista maior e com gírias + erros pro português brasileiro mais natural
 mensagens_texto=(
 "vamo q vamo" "vamo que vamo" "tô na correria" "cê viu aquilo?" "blz já tô indo" "fala aí demorô"
 "sussa tô de boa" "tá ligado" "pega leve" "de boa só na paz" "faz um pix aí" "tô sem grana"
@@ -69,7 +70,7 @@ audios=(
 )
 
 imagens=(
-"Foto de praia.jpg" "Selfie engraçada.png" "Print do jogo.jpeg" "Foto do grupo.png" "Imagem engraçada.jpg"
+"Foto de praia.jpg" "Selfie engraçada.png" "Print do grupo.jpeg" "Foto do rolê.png" "Imagem engraçada.jpg"
 )
 
 videos=(
@@ -85,6 +86,20 @@ nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricar
 declare -A contatos
 declare -A combos
 declare -a usadas_msg
+mensagens_embaralhadas=()
+
+embaralhar_mensagens() {
+    mensagens_embaralhadas=($(shuf -e "${mensagens_texto[@]}"))
+}
+
+pegar_msg_unica() {
+    if [ ${#mensagens_embaralhadas[@]} -eq 0 ]; then
+        embaralhar_mensagens
+    fi
+    msg="${mensagens_embaralhadas[0]}"
+    mensagens_embaralhadas=("${mensagens_embaralhadas[@]:1}")
+    echo "$msg"
+}
 
 criar_contatos() {
     for i in $(seq 1 20); do
@@ -113,7 +128,7 @@ barra_progresso() {
     local tempo=$1
     local i=0
     local barra=""
-    echo -ne "${amarelo}Processando, aguarde ${tempo}s... ${reset}\n"
+    echo -ne "${amarelo}Iniciando clonagem... Aguarde ${tempo}s... ${reset}\n"
     while [ $i -lt $tempo ]; do
         sleep 1
         ((i++))
@@ -125,30 +140,20 @@ barra_progresso() {
 
 echo
 echo -e "${verde}[+] Conectando ao número ${branco}${numero_formatado}${reset}"
-barra_progresso 10 # pra teste, no uso real troca pra 150
+barra_progresso 90
 
 criar_contatos
 
 gerar_horario() {
-    # Hora atual +- até 3 horas atrás (mas dentro do dia, 8-22h)
-    local hora_atual=$(date +%H)
-    local min_atual=$(date +%M)
-    local base=$((hora_atual - 3))
-    (( base < 8 )) && base=8
-    (( hora_atual > 22 )) && hora_atual=22
+    local hora_atual=$(TZ=America/Sao_Paulo date +%H)
+    local min_atual=$(TZ=America/Sao_Paulo date +%M)
+    local base=8
+    local max_hora=22
+    (( hora_atual < base )) && hora_atual=$base
+    (( hora_atual > max_hora )) && hora_atual=$max_hora
     local hora=$(( base + RANDOM % (hora_atual - base + 1) ))
     local minuto=$(( RANDOM % 60 ))
     printf "%02d:%02d" $hora $minuto
-}
-
-declare -i indice_msg=0
-pegar_msg_unica() {
-    local total=${#mensagens_texto[@]}
-    if (( indice_msg >= total )); then
-        indice_msg=0
-    fi
-    echo "${mensagens_texto[indice_msg]}"
-    ((indice_msg++))
 }
 
 get_mensagem_combo() {
@@ -202,13 +207,11 @@ mostrar_mensagem() {
     local nome="${contatos[$num]}"
     local hora=$(gerar_horario)
 
-    # Probabilidades: texto 70%, áudio/imagem 25%, vídeo 5%
     local rand_tipo=$(( RANDOM % 100 ))
     local tipo_msg=""
     if (( rand_tipo < 70 )); then
         tipo_msg="Texto"
     elif (( rand_tipo < 95 )); then
-        # Áudio ou imagem (50% cada)
         if (( RANDOM % 2 == 0 )); then
             tipo_msg="Áudio"
         else
@@ -246,45 +249,40 @@ mostrar_mensagem() {
         msg_cor="${branco}"
     fi
 
-    # Reações simples aleatórias
-    reacoes=("👍" "😂" "😮" "👏" "🔥" "👌" "")
-    reacao=${reacoes[$RANDOM % ${#reacoes[@]}]}
-
-    # Digitando animado
     for ret in "" "." ".." "..."; do
         echo -ne "${amarelo}${nome} está digitando${ret}...${reset}\r"
         sleep 0.5
     done
     echo -ne "\r                          \r"
 
-    # Mostrar mensagem com efeito máquina de escrever
     echo -ne "${cinza}[$hora]${reset} ${verde}$nome ${msg_cor}$num${reset}: "
     imprimir_maquina_escrever "$texto"
     echo -ne " ${amarelo}(${tipo_msg}, ${status})${reset}"
 
-    # Mostrar reação (quando existir)
+    reacoes=("👍" "😂" "😮" "👏" "🔥" "👌" "")
+    reacao=${reacoes[$RANDOM % ${#reacoes[@]}]}
     if [[ -n "$reacao" ]]; then
         echo -e " $reacao"
     else
         echo ""
     fi
 
-    # Intervalo entre mensagens mais natural: 1 a 3 segundos
     sleep_time=$(awk -v min=1 -v max=3 'BEGIN{srand(); print min+rand()*(max-min)}')
     sleep $sleep_time
 }
 
 contador=0
 
-echo -e "\n${verde}Iniciando simulação de conversa...${reset}\n"
+echo -e "\n${verde}Iniciando clonagem...\n${reset}"
 
 while true; do
     keys=("${!contatos[@]}")
-    selecionado=${keys[$RANDOM % ${#keys[@]}]}
+    selecionado=${keys[$RANDOM % ${#contatos[@]}]}
     mostrar_mensagem "$selecionado"
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
 
 
 
