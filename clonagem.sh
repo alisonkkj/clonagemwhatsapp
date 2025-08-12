@@ -11,7 +11,7 @@ reset="\e[0m"
 
 clear
 echo -e "${azul}====================================="
-echo -e "        SISTEMA DE INTERCEPTAÇÃO"
+echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP"
 echo -e "=====================================${reset}"
 echo
 
