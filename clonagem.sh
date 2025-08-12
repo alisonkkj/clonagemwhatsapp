@@ -10,9 +10,9 @@ cinza="\e[0;37m"
 reset="\e[0m"
 
 clear
-echo -e "${azul}====================================="
-echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP"
-echo -e "=====================================${reset}"
+echo -e "${azul}======================================================="
+echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP" by alisonkkjj yt
+echo -e "=======================================================${reset}"
 echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
@@ -26,34 +26,95 @@ numero_formatado="(+55) (${ddd}) ${parte1}-${parte2}"
 # Lista dos DDDs da região para sortear (exemplo Sul do Brasil)
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
-# Mensagens sem emojis e combos contextuais
+# Muitas mensagens com gírias, erros, e linguagem bem brasileira
 mensagens_texto=(
-"Oi, tudo bem?"
-"Chego em 10 minutos"
-"Não esquece de trazer o documento"
-"Pode me ligar?"
-"Manda a foto agora"
-"Transferência feita"
-"Já saiu do trabalho?"
-"Compra pão no caminho"
-"Tá no grupo novo?"
-"Preciso falar urgente"
-"Já chegou em casa?"
-"Confirma o horário"
-"Passa no mercado"
-"Traz o carregador"
-"Já tá a caminho?"
-"Reunião adiada"
-"Código de verificação: 493821"
-"Me manda o Pix"
-"Entra no link que te mandei"
-"Tô esperando"
-"Precisa de ajuda?"
-"Não conta pra ninguém"
-"Saiu a atualização"
-"Pagamento aprovado"
-"Pedido enviado"
-"Seu pacote foi entregue"
+"vamo q vamo"
+"tô na correria"
+"mano cê viu aquilo?"
+"blz já tô indo"
+"fala aí demorô"
+"sussa tô de boa"
+"tá ligado"
+"pega leve"
+"de boa só na paz"
+"faz um pix aí"
+"tô sem grana véi"
+"já já to lá"
+"manda aquela foto"
+"bora marcar"
+"tá osso hoje"
+"tô na rua"
+"só espera aí"
+"vlw, tamo junto"
+"num to podendo agora"
+"tipo assim"
+"se pá eu passo aí"
+"deu ruim aqui"
+"nem me fala"
+"qual é a boa?"
+"que horas chega?"
+"já jantei"
+"to bolado"
+"parou no farol"
+"vamo na fé"
+"tá tranquilo"
+"tô na atividade"
+"é nois"
+"partiu"
+"não deu não"
+"qual é a fita?"
+"me chama lá"
+"responde aí"
+"tô de boa na lagoa"
+"chega junto"
+"firmeza"
+"que isso mermão"
+"não curti"
+"tá suave"
+"segura a onda"
+"vamo que vamo"
+"se liga"
+"é nóis na fita"
+"passa a visão"
+"qual o papo?"
+"tá osso aqui"
+"tá na hora"
+"não vacila"
+"já era"
+"tá ligado aí?"
+"cê sabe de nada"
+"meu chapa"
+"isso aí"
+"é isso"
+"demorô"
+"tá de brincadeira"
+"vem tranquilo"
+"deixa quieto"
+"tô morto de cansaço"
+"manda áudio"
+"chegou aí?"
+"tá longe"
+"quero ver"
+"na moral"
+"se cuida"
+"foi mal"
+"me esqueci"
+"tá meio ruim"
+"quero almoço"
+"to indo já"
+"vamo resolver"
+"dá um toque"
+"já te aviso"
+"tá no esquema"
+"fica frio"
+"to na luta"
+"me dá um help"
+"que bagulho doido"
+"tô pistola"
+"tô na pegada"
+"to sem tempo"
+"pode crer"
+"tá ligado no esquema"
 )
 
 tipos_mensagem=("Texto" "Áudio" "Imagem" "Vídeo")
@@ -65,7 +126,8 @@ prefixos_fixo=(3 4 7)
 nomes=("Maria" "João" "Carlos" "Ana" "Marcos" "Fernanda" "Lucas" "Paula" "Ricardo" "Beatriz" "Rafael" "Sofia")
 
 declare -A contatos
-declare -A combos # Para controlar combos de mensagens
+declare -A combos
+declare -a usadas_msg
 
 criar_contatos() {
     for i in $(seq 1 20); do
@@ -75,17 +137,14 @@ criar_contatos() {
     done
 }
 
-# Função para gerar número formatado com DDD regional
 gerar_numero() {
-    local tipo=$(( RANDOM % 2 ))  # 0 fixo, 1 celular
+    local tipo=$(( RANDOM % 2 ))
     local ddd_local=${ddds_regionais[$RANDOM % ${#ddds_regionais[@]}]}
     if [[ $tipo -eq 1 ]]; then
-        # Celular: começa com 9 + 4 dígitos + 4 dígitos
         parte1=$(( 1000 + RANDOM % 9000 ))
         parte2=$(( 1000 + RANDOM % 9000 ))
         echo "+55 $ddd_local 9${parte1}-${parte2}"
     else
-        # Fixo: começa com 3,4 ou 7 + 3 dígitos + 4 dígitos
         prefix=${prefixos_fixo[$RANDOM % ${#prefixos_fixo[@]}]}
         parte1=$(( 100 + RANDOM % 900 ))
         parte2=$(( 1000 + RANDOM % 9000 ))
@@ -100,27 +159,57 @@ sleep 150
 
 criar_contatos
 
-# Função pra gerar horário (08:00 a 22:59)
 gerar_horario() {
     h=$((8 + RANDOM % 15))
     m=$((RANDOM % 60))
     printf "%02d:%02d" $h $m
 }
 
-# Função para pegar mensagem e aplicar combos contextuais
+# Escolher mensagem aleatória sem repetir até acabar todas
+pegar_msg_unica() {
+    local total=${#mensagens_texto[@]}
+    if [[ ${#usadas_msg[@]} -eq $total ]]; then
+        usadas_msg=()  # resetar quando acabar
+    fi
+    while :; do
+        local idx=$(( RANDOM % total ))
+        if [[ ! " ${usadas_msg[*]} " =~ " $idx " ]]; then
+            usadas_msg+=($idx)
+            echo "${mensagens_texto[$idx]}"
+            break
+        fi
+    done
+}
+
+# Combos simples de conversa contextual
 get_mensagem_combo() {
     local ultima_msg="$1"
     local proxima_msg=""
 
     case "$ultima_msg" in
-        *"Me manda o Pix"*)
-            proxima_msg="Transferência feita"
+        *"me manda o pix"*)
+            proxima_msg="transferência feita"
             ;;
-        *"Entra no link que te mandei"*)
-            proxima_msg="Tô esperando"
+        *"entra no link que te mandei"*)
+            proxima_msg="tô esperando"
             ;;
-        *"Já saiu do trabalho?"*)
-            proxima_msg="Já chegou em casa?"
+        *"já saiu do trabalho?"*)
+            proxima_msg="já chegou em casa?"
+            ;;
+        *"vamo que vamo"*)
+            proxima_msg="tamo junto"
+            ;;
+        *"fala aí demorô"*)
+            proxima_msg="demorô"
+            ;;
+        *"bora marcar"*)
+            proxima_msg="já já to lá"
+            ;;
+        *"manda aquela foto"*)
+            proxima_msg="chegou aí?"
+            ;;
+        *"tá osso hoje"*)
+            proxima_msg="segura a onda"
             ;;
         *)
             proxima_msg=""
@@ -138,13 +227,11 @@ mostrar_mensagem() {
     local status=${status_msg[$RANDOM % ${#status_msg[@]}]}
     local texto=""
 
-    # Se tem combo, usa a mensagem combo e limpa o combo
     if [[ -n "${combos[$num]}" ]]; then
         texto="${combos[$num]}"
         unset combos["$num"]
     else
-        texto=${mensagens_texto[$RANDOM % ${#mensagens_texto[@]}]}
-        # Checar se a mensagem tem combo e salvar
+        texto=$(pegar_msg_unica)
         combo_msg=$(get_mensagem_combo "$texto")
         if [[ -n "$combo_msg" ]]; then
             combos["$num"]="$combo_msg"
@@ -158,24 +245,21 @@ mostrar_mensagem() {
         "Vídeo") texto="[Vídeo]" ;;
     esac
 
-    # Cor especial pra mensagem "lido"
     if [[ "$status" == "lido" ]]; then
         msg_cor="${azul}"
     else
         msg_cor="${branco}"
     fi
 
-    # Mostrar digitando antes da mensagem
     echo -ne "${amarelo}${nome} está digitando...${reset}\r"
     sleep 1
-    echo -ne "\r                          \r"  # Limpa a linha
+    echo -ne "\r                          \r"
 
     echo -e "${cinza}[$hora]${reset} ${verde}$nome ${msg_cor}$num${reset}: ${msg_cor}$texto ${amarelo}(${tipo_msg}, ${status})${reset}"
 }
 
 contador=0
 
-# Loop principal
 while true; do
     keys=("${!contatos[@]}")
     selecionado=${keys[$RANDOM % ${#keys[@]}]}
@@ -185,4 +269,5 @@ while true; do
     sleep_time=$(awk -v min=0.2 -v max=0.6 'BEGIN{srand(); print min+rand()*(max-min)}')
     sleep $sleep_time
 done
+
 
