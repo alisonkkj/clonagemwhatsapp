@@ -4,15 +4,21 @@
 verde="\e[1;32m"
 vermelho="\e[1;31m"
 azul="\e[1;34m"
-branco="\e[1;37m"
 amarelo="\e[1;33m"
 cinza="\e[0;37m"
+branco="\e[1;37m"
 reset="\e[0m"
 
+# Cabeçalho colorido
 clear
-echo -e "${azul}======================================================="
-echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${vermelho}by: alisonkkjj yt${reset}"
-echo -e "=======================================================${reset}"
+echo -e "${azul}  ____  _     ___ ____ ___ ___  _   _ ${reset}"
+echo -e "${amarelo} / ___|| |   |_ _/ ___|_ _/ _ \\| \\ | |${reset}"
+echo -e "${azul} \\___ \\| |    | | |    | | | | |  \\| |${reset}"
+echo -e "${amarelo}  ___) | |___ | | |___ | | |_| | |\\  |${reset}"
+echo -e "${azul} |____/|_____|___\\____|___\\___/|_| \\_|${reset}"
+echo
+echo -e "${amarelo}SISTEMA DE CLONAGEM DE WHATSAPP${reset}"
+echo -e "${amarelo}              by alisonkkjj yt${reset}"
 echo
 
 read -p "Digite o número alvo (DDD + número, ex: 45987512345): " numero
@@ -36,7 +42,6 @@ RANDOM=$seed
 
 ddds_regionais=(41 42 43 44 45 46 47 48 49)
 
-# Lista maior e com gírias + erros pro português brasileiro mais natural
 mensagens_texto=(
 "vamo q vamo" "vamo que vamo" "tô na correria" "cê viu aquilo?" "blz já tô indo" "fala aí demorô"
 "sussa tô de boa" "tá ligado" "pega leve" "de boa só na paz" "faz um pix aí" "tô sem grana"
@@ -124,20 +129,16 @@ gerar_numero() {
     fi
 }
 
-# Função barra de progresso SUAVE, verde, sem números piscando
 barra_progresso() {
     local tempo=$1
     local i=0
-    local total=50
-    echo -ne "${verde}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
+    local barra=""
+    echo -ne "${amarelo}Iniciando clonagem... Aguarde ${tempo}s... ${reset}\n"
     while [ $i -lt $tempo ]; do
         sleep 1
         ((i++))
-        filled=$(( i * total / tempo ))
-        empty=$(( total - filled ))
-        bar_filled=$(printf '▒%.0s' $(seq 1 $filled))
-        bar_empty=$(printf ' %.0s' $(seq 1 $empty))
-        echo -ne "\r${verde}[${bar_filled}${bar_empty}] ${i}s/${tempo}s${reset} "
+        barra="${barra}#"
+        echo -ne "\r${amarelo}[${barra}] ${i}s/${tempo}s${reset} "
     done
     echo -e "\n"
 }
@@ -286,6 +287,8 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
+
 
 
 
