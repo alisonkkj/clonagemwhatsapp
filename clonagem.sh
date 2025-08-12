@@ -11,7 +11,7 @@ reset="\e[0m"
 
 clear
 echo -e "${azul}======================================================="
-echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${vermelho}by alisonkkjj yt${reset}"
+echo -e "        SISTEMA DE CLONAGEM DE WHATSAPP ${vermelho}by: alisonkkjj yt${reset}"
 echo -e "=======================================================${reset}"
 echo
 
@@ -286,6 +286,7 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
+
 
 
 
