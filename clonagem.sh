@@ -129,16 +129,17 @@ gerar_numero() {
     fi
 }
 
+# Barra de progresso discreta (cinza claro, caracteres suaves)
 barra_progresso() {
     local tempo=$1
     local i=0
     local barra=""
-    echo -ne "${verde}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
+    echo -ne "${cinza}Iniciando clonagem... Aguarde ${tempo}s...${reset}\n"
     while [ $i -lt $tempo ]; do
         sleep 1
         ((i++))
         barra="${barra}▒"
-        echo -ne "\r${verde}[${barra}] ${i}s/${tempo}s${reset} "
+        echo -ne "\r${cinza}[${barra}] ${i}s/${tempo}s${reset} "
     done
     echo -e "\n"
 }
@@ -287,7 +288,6 @@ while true; do
     ((contador++))
     echo -ne "${cinza}Mensagens exibidas: $contador${reset}\r"
 done
-
 
 
 
